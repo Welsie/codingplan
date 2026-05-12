@@ -1,0 +1,894 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>AtomCode CodingPlan · 昇腾算力订阅制</title>
+<meta name="description" content="AtomCode CodingPlan — 国产昇腾算力 · 订阅制 AI 编码 · 不烧 Token，限时免费">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#000;color:#fff;font-family:"PingFang SC","Microsoft YaHei",Inter,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  button,select,input,textarea{font-family:inherit;border:none;outline:none;color:inherit;background:none}
+  button{cursor:pointer;padding:0}
+  :root{
+    --bg:#000;--paper:#f6f3ec;--ink:#0d0d0d;
+    --muted:rgba(255,255,255,.55);
+    --line:rgba(255,255,255,.12);
+    --accent:#e8a050;
+    --mit:#7aa6ff;
+    --apache:#69d28a;
+    --qwen:#b07cff;
+    --deepseek:#ff8e6c;
+    --mono:Menlo,Monaco,Consolas,"Courier New",monospace;
+    --serif:Georgia,"Times New Roman",serif;
+  }
+
+  /* ---------- scroll progress ---------- */
+  .progress-track{position:fixed;top:0;left:0;right:0;height:2px;z-index:1001;background:rgba(255,255,255,.04);pointer-events:none}
+  .progress-bar{height:100%;width:0;background:linear-gradient(90deg,#e8a050,#f6f3ec 60%,#e8a050);background-size:200% 100%;box-shadow:0 0 10px rgba(232,160,80,.55),0 0 20px rgba(232,160,80,.25);animation:shineFlow 3s linear infinite;transition:width .12s linear}
+  @keyframes shineFlow{0%{background-position:0 0}100%{background-position:200% 0}}
+
+  /* ---------- aurora + ripple ---------- */
+  .aurora{position:fixed;inset:0;z-index:9000;pointer-events:none;background:radial-gradient(circle 360px at var(--mx,-200px) var(--my,-200px),rgba(232,160,80,.18) 0%,rgba(232,160,80,.06) 30%,rgba(232,160,80,0) 60%),radial-gradient(circle 700px at var(--mx,-200px) var(--my,-200px),rgba(150,180,220,.05) 0%,rgba(150,180,220,0) 70%);mix-blend-mode:screen}
+  .ripple{position:fixed;left:0;top:0;width:8px;height:8px;border-radius:50%;pointer-events:none;z-index:9100;background:rgba(232,160,80,.55);transform:translate(-50%,-50%);animation:rip .65s cubic-bezier(.22,1,.36,1) forwards}
+  @keyframes rip{0%{width:6px;height:6px;background:rgba(232,160,80,.85)}100%{width:160px;height:160px;background:rgba(232,160,80,0)}}
+
+  /* ---------- header ---------- */
+  .hdr{position:fixed;top:0;left:0;right:0;z-index:1000;height:60px;padding:0 30px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);color:#fff;background:rgba(0,0,0,.4);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.06);transition:background .25s}
+  .hdr.scrolled{background:rgba(0,0,0,.85)}
+  .hdr-logo{display:flex;align-items:center;gap:10px;font-family:Inter,sans-serif;font-weight:600;font-size:15px;letter-spacing:.5px}
+  .hdr-nav{display:flex;gap:24px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase}
+  .hdr-nav a{position:relative;padding:6px 2px;color:rgba(255,255,255,.7);transition:color .2s}
+  .hdr-nav a::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .25s}
+  .hdr-nav a:hover,.hdr-nav a.active{color:#fff}
+  .hdr-nav a.active::after{transform:scaleX(1)}
+  .hdr-right{display:flex;gap:14px;align-items:center}
+  .btn-pill{height:32px;padding:0 14px;display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.3);font-size:11px;letter-spacing:1.5px;color:#fff;transition:background .2s,color .2s,border-color .2s}
+  .btn-pill:hover{background:#fff;color:#000;border-color:#fff}
+  .btn-pill.primary{background:var(--accent);color:#000;border-color:var(--accent)}
+  .btn-pill.primary:hover{background:#fff;color:#000;border-color:#fff}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;padding:140px 30px 60px;overflow:hidden;background:radial-gradient(ellipse 90% 60% at 50% 0%,rgba(232,160,80,.12),transparent 60%)}
+  .hero-wrap{width:min(1200px,100%);margin:0 auto;text-align:center}
+  .hero-eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;padding:6px 14px;border:1px solid rgba(232,160,80,.4);border-radius:999px;margin-bottom:18px}
+  .hero-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:dotPulse 2s ease-in-out infinite}
+  @keyframes dotPulse{0%,50%{opacity:1}25%{opacity:.3}}
+  .hero-h1{margin:0 0 16px;font-family:Inter,sans-serif;font-size:64px;font-weight:600;line-height:1.05;letter-spacing:-1.5px;background:linear-gradient(180deg,#fff,#a8b0bf);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .hero-h1 .accent{background:linear-gradient(90deg,#e8a050,#ffd194);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .hero-sub{font-size:17px;line-height:1.7;color:rgba(255,255,255,.7);max-width:680px;margin:0 auto 36px}
+  .hero-stats{display:flex;justify-content:center;gap:48px;flex-wrap:wrap;font-family:var(--mono);margin-bottom:8px}
+  .stat{text-align:center}
+  .stat-n{display:block;font-size:36px;font-weight:500;color:#fff;letter-spacing:-.5px;font-feature-settings:"tnum";font-variant-numeric:tabular-nums}
+  .stat-l{font-size:10px;letter-spacing:2.5px;color:rgba(255,255,255,.4);text-transform:uppercase;margin-top:4px}
+  .hero-banner{margin-top:60px;padding:24px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(232,160,80,.06),rgba(232,160,80,0));display:flex;align-items:center;justify-content:space-between;gap:24px;font-family:var(--mono);font-size:13px;letter-spacing:1px;cursor:pointer;transition:border-color .25s,background .25s}
+  .hero-banner:hover{border-color:var(--accent);background:linear-gradient(180deg,rgba(232,160,80,.12),rgba(232,160,80,0))}
+  .hero-banner .left{display:flex;align-items:center;gap:14px}
+  .hero-banner .tag{padding:4px 10px;background:var(--accent);color:#000;font-size:10px;letter-spacing:2px;font-weight:600}
+
+  /* ---------- quota strip ---------- */
+  .quota{position:sticky;top:60px;z-index:900;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.85);letter-spacing:1.5px}
+  .quota-wrap{width:min(1200px,100%);margin:0 auto;padding:14px 30px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+  .quota-l{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+  .quota-l .item{display:flex;align-items:center;gap:8px}
+  .quota-l .pip{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent);animation:dotPulse 1.8s ease-in-out infinite}
+  .quota-l .num{color:var(--accent);font-weight:500}
+  .quota-progress{flex:1;min-width:160px;height:4px;background:rgba(255,255,255,.08);position:relative;overflow:hidden}
+  .quota-progress .fill{height:100%;background:linear-gradient(90deg,var(--accent),#ffd194);transition:width .6s ease}
+
+  /* ---------- task chips ---------- */
+  .chips-section{padding:60px 30px 20px;text-align:center}
+  .chips-section .lbl{font-family:var(--mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:14px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;width:min(900px,100%);margin:0 auto}
+  .chip{padding:10px 18px;border:1px solid var(--line);background:rgba(255,255,255,.02);font-family:var(--mono);font-size:13px;color:rgba(255,255,255,.75);letter-spacing:.5px;transition:all .2s ease;position:relative;overflow:hidden}
+  .chip::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(232,160,80,.15),transparent);transform:translateX(-110%);transition:transform .6s}
+  .chip:hover::before{transform:translateX(110%)}
+  .chip:hover{border-color:rgba(232,160,80,.5);color:#fff}
+  .chip.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:500}
+  .chips-tip{margin-top:14px;font-size:12px;color:rgba(255,255,255,.4);font-family:var(--mono);min-height:18px;transition:opacity .25s}
+
+  /* ---------- pricing ---------- */
+  .pricing{padding:40px 30px 100px;position:relative}
+  .section-head{width:min(1200px,100%);margin:0 auto 40px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:20px;padding:0 12px;border-bottom:1px solid var(--line);padding-bottom:18px}
+  .section-head h2{margin:0;font-family:Inter,sans-serif;font-size:34px;font-weight:600;letter-spacing:-1px;color:#fff}
+  .section-head h2 .mono{font-family:var(--mono);font-size:14px;color:var(--accent);letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:8px;font-weight:400}
+  .section-head .hint{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.5);letter-spacing:1px}
+
+  .tiers{width:min(1200px,100%);margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;transition:filter .25s ease}
+  .tiers.has-hover .tier:not(.is-hover){opacity:.4;transform:scale(.97)}
+  .tier{position:relative;padding:32px 28px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0));transition:opacity .3s ease,transform .3s ease,border-color .3s ease,box-shadow .3s ease}
+  .tier.featured{border-color:rgba(232,160,80,.45)}
+  .tier.featured::before{content:"";position:absolute;inset:0 0 auto 0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);background-size:200% 100%;animation:shineFlow 4s linear infinite}
+  .tier.featured .ribbon{position:absolute;top:18px;right:-1px;padding:6px 12px;background:var(--accent);color:#000;font-family:var(--mono);font-size:10px;letter-spacing:2px;font-weight:600}
+  .tier.coming{opacity:.6}
+  .tier.coming:hover{opacity:.85}
+  .tier-tag{font-family:var(--mono);font-size:11px;letter-spacing:2.5px;color:var(--accent);text-transform:uppercase}
+  .tier-name{margin:14px 0 4px;font-family:Inter,sans-serif;font-size:32px;font-weight:600;color:#fff;letter-spacing:-.5px}
+  .tier-tagline{margin:0 0 22px;font-size:13px;color:rgba(255,255,255,.55);font-family:var(--mono);letter-spacing:.5px}
+  .price-row{display:flex;align-items:baseline;gap:6px;margin-bottom:24px;font-family:Inter,sans-serif}
+  .price-row .free{font-size:38px;font-weight:600;color:#fff;letter-spacing:-1px}
+  .price-row .per{font-size:13px;color:rgba(255,255,255,.45);font-family:var(--mono);letter-spacing:1px}
+  .tier-meta{display:flex;flex-direction:column;gap:10px;margin-bottom:22px;padding-top:18px;border-top:1px dashed var(--line)}
+  .tier-meta .row{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:13px}
+  .tier-meta .row .k{color:rgba(255,255,255,.5);letter-spacing:.5px}
+  .tier-meta .row .v{color:#fff}
+  .tier-meta .row .v .count{font-size:18px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--accent)}
+  .tier-models{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px}
+  .tier-models .mtag{font-family:var(--mono);font-size:11px;padding:4px 8px;background:rgba(255,255,255,.05);border:1px solid var(--line);color:rgba(255,255,255,.7);letter-spacing:.5px}
+  .tier-tasks{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:26px}
+  .tier-tasks .ttag{font-family:var(--mono);font-size:11px;padding:4px 9px;border:1px solid var(--line);color:rgba(255,255,255,.55);letter-spacing:.5px;transition:all .25s ease}
+  .tier-tasks .ttag.hit{background:rgba(232,160,80,.18);border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 1px rgba(232,160,80,.25)}
+  .tier-tasks .ttag.miss{opacity:.25}
+  .tier-cta{display:block;width:100%;padding:14px;text-align:center;font-family:var(--mono);font-size:13px;letter-spacing:2px;transition:all .2s ease}
+  .tier-cta.outline{border:1px solid #fff;color:#fff;background:transparent}
+  .tier-cta.outline:hover{background:#fff;color:#000}
+  .tier-cta.solid{background:var(--accent);color:#000;border:1px solid var(--accent);font-weight:600;box-shadow:0 8px 24px rgba(232,160,80,.25)}
+  .tier-cta.solid:hover{box-shadow:0 12px 32px rgba(232,160,80,.45);transform:translateY(-1px)}
+  .tier-cta.disabled{border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.4);background:transparent;cursor:not-allowed;text-transform:uppercase}
+  .tier-cta-sub{margin-top:10px;font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.5);text-align:center;letter-spacing:1.2px;cursor:pointer;transition:color .2s}
+  .tier-cta-sub:hover{color:var(--accent)}
+  .tier-cta-sub .kbd{padding:2px 5px;border:1px solid var(--line);font-size:10px;margin-left:6px}
+  .notify-form{margin-top:10px;display:flex;gap:6px}
+  .notify-form input{flex:1;padding:10px 12px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:#fff;font-family:var(--mono);font-size:12px;letter-spacing:.5px;transition:border-color .2s}
+  .notify-form input:focus{border-color:var(--accent)}
+  .notify-form button{padding:0 14px;background:rgba(232,160,80,.18);border:1px solid rgba(232,160,80,.4);color:var(--accent);font-family:var(--mono);font-size:11px;letter-spacing:1.5px;transition:all .2s}
+  .notify-form button:hover{background:var(--accent);color:#000}
+
+  /* ---------- models section ---------- */
+  .models{padding:40px 30px 120px}
+  .models-wrap{width:min(1280px,100%);margin:0 auto}
+  .filter-bar{position:sticky;top:120px;z-index:850;margin:0 -30px 32px;padding:14px 30px;background:rgba(10,10,10,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .search{position:relative;flex:1;min-width:200px;max-width:320px}
+  .search input{width:100%;padding:10px 14px 10px 36px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:#fff;font-family:var(--mono);font-size:12px;letter-spacing:.5px;transition:border-color .2s}
+  .search input:focus{border-color:var(--accent)}
+  .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.5}
+  .filter-chips{display:flex;flex-wrap:wrap;gap:6px}
+  .fchip{padding:7px 12px;border:1px solid var(--line);font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.65);letter-spacing:.5px;transition:all .2s}
+  .fchip:hover{border-color:rgba(232,160,80,.5);color:#fff}
+  .fchip.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:500}
+  .filter-meta{margin-left:auto;font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.45);letter-spacing:1px}
+  .filter-meta b{color:var(--accent);font-weight:500}
+
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .mcard{position:relative;padding:22px 22px 18px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0));display:flex;flex-direction:column;min-height:240px;cursor:pointer;transform-style:preserve-3d;transition:opacity .25s ease,border-color .25s ease,transform .3s cubic-bezier(.22,1,.36,1)}
+  .mcard.hidden{display:none}
+  .mcard::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--bar,#444)}
+  .mcard::after{content:"";position:absolute;inset:0;background:radial-gradient(circle 200px at var(--mx,50%) var(--my,50%),rgba(232,160,80,.16),transparent 60%);opacity:0;transition:opacity .25s;pointer-events:none}
+  .mcard:hover::after{opacity:1}
+  .mcard:hover{border-color:rgba(232,160,80,.4)}
+  .mcard > *{position:relative;z-index:1}
+  .mhead{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .mlogo{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-weight:700;font-size:13px;color:#000;flex-shrink:0}
+  .mname{margin:0;font-family:Inter,sans-serif;font-size:15px;font-weight:600;color:#fff;letter-spacing:-.2px;line-height:1.3}
+  .mparams{margin-top:2px;font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.5px}
+  .mbadges{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+  .mbadge{font-family:var(--mono);font-size:10px;padding:2px 7px;letter-spacing:.8px;text-transform:uppercase}
+  .mbadge.license{border:1px solid;color:var(--bc,#aaa)}
+  .mbadge.task{background:rgba(255,255,255,.06);border:1px solid var(--line);color:rgba(255,255,255,.65)}
+  .mbadge.hot{background:rgba(232,160,80,.18);color:var(--accent);border:1px solid rgba(232,160,80,.5);animation:hotPulse 2s ease-in-out infinite}
+  @keyframes hotPulse{0%,100%{box-shadow:0 0 0 0 rgba(232,160,80,.4)}50%{box-shadow:0 0 0 4px rgba(232,160,80,0)}}
+  .mdesc{font-size:12px;line-height:1.6;color:rgba(255,255,255,.6);margin:0 0 14px;flex:1}
+  .mfoot{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px dashed var(--line)}
+  .mfoot .copyc{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.7);letter-spacing:1px;padding:6px 10px;border:1px solid var(--line);transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+  .mfoot .copyc:hover{background:var(--accent);color:#000;border-color:var(--accent)}
+  .mfoot .detail{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.55);letter-spacing:1px;transition:color .2s}
+  .mfoot .detail:hover{color:var(--accent)}
+
+  /* ---------- code modal ---------- */
+  .overlay{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(5,5,8,.7);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+  .overlay.show{display:flex;animation:fadeI .2s ease}
+  @keyframes fadeI{from{opacity:0}to{opacity:1}}
+  .dialog{position:relative;width:min(720px,100%);max-height:88vh;overflow:hidden;background:#0d0d0d;border:1px solid var(--line);border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.6);font-family:var(--mono);display:flex;flex-direction:column}
+  .dlg-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--line)}
+  .dlg-title{font-size:14px;letter-spacing:2px;color:#fff;text-transform:uppercase}
+  .dlg-title small{display:block;font-size:11px;color:var(--accent);margin-top:4px;letter-spacing:1.5px}
+  .dlg-close{font-size:22px;line-height:1;color:rgba(255,255,255,.5);cursor:pointer;padding:4px 8px;transition:color .2s}
+  .dlg-close:hover{color:#fff}
+  .dlg-tabs{display:flex;gap:0;padding:0 22px;border-bottom:1px solid var(--line)}
+  .dlg-tab{padding:12px 16px;font-size:12px;letter-spacing:1.5px;color:rgba(255,255,255,.5);cursor:pointer;position:relative;transition:color .2s}
+  .dlg-tab.active{color:#fff}
+  .dlg-tab.active::after{content:"";position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--accent)}
+  .dlg-body{padding:18px 22px;overflow:auto;flex:1}
+  .codebox{position:relative;background:rgba(255,255,255,.03);border:1px solid var(--line);padding:16px;font-size:13px;line-height:1.6;color:#e8e8e8;white-space:pre;overflow-x:auto;font-family:var(--mono)}
+  .codebox .kw{color:var(--accent)}
+  .codebox .str{color:#9ecbff}
+  .codebox .com{color:rgba(255,255,255,.35)}
+  .codecopy{position:absolute;top:10px;right:10px;padding:6px 10px;background:rgba(232,160,80,.18);border:1px solid rgba(232,160,80,.4);color:var(--accent);font-size:10px;letter-spacing:1.5px;cursor:pointer;transition:all .2s}
+  .codecopy:hover{background:var(--accent);color:#000}
+  .codecopy.copied{background:var(--apache);color:#000;border-color:var(--apache)}
+  .toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);z-index:2000;padding:12px 24px;font-size:13px;letter-spacing:1px;background:#000;color:#f6f3ec;border:1px solid var(--accent);border-radius:6px;font-family:var(--mono);opacity:0;transition:opacity .2s,transform .2s}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px)}
+
+  /* ---------- section anchors (left rail) ---------- */
+  .rail{position:fixed;left:24px;top:50%;transform:translateY(-50%);z-index:800;display:flex;flex-direction:column;gap:18px;font-family:var(--mono);font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.4);text-transform:uppercase}
+  .rail-item{display:flex;align-items:center;gap:8px;cursor:pointer;transition:color .25s}
+  .rail-item .pip{width:6px;height:6px;border-radius:50%;border:1px solid currentColor;transition:all .25s}
+  .rail-item:hover,.rail-item.active{color:var(--accent)}
+  .rail-item.active .pip{background:var(--accent);border-color:var(--accent);box-shadow:0 0 8px var(--accent)}
+
+  /* ---------- magnetic ---------- */
+  [data-magnetic]{transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .25s ease;will-change:transform}
+
+  /* ---------- footer ---------- */
+  .ftr{padding:40px 30px 24px;text-align:center;font-family:Outfit,Inter,sans-serif;font-size:12px;color:rgba(255,255,255,.35);border-top:1px solid var(--line)}
+  .ftr a:hover{color:#fff}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:1024px){
+    .grid{grid-template-columns:repeat(2,1fr)}
+    .rail{display:none}
+  }
+  @media (max-width:768px){
+    .hdr{padding:0 16px;height:52px}
+    .hdr-nav{display:none}
+    .hero{padding:100px 16px 40px}
+    .hero-h1{font-size:36px}
+    .hero-sub{font-size:14px}
+    .hero-stats{gap:24px}
+    .stat-n{font-size:24px}
+    .section-head h2{font-size:24px}
+    .tiers{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:85%;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:16px;margin:0 -16px;padding-left:16px;padding-right:16px}
+    .tier{scroll-snap-align:start}
+    .tiers.has-hover .tier:not(.is-hover){opacity:1;transform:none}
+    .grid{grid-template-columns:1fr}
+    .filter-bar{top:112px;flex-direction:column;align-items:stretch}
+    .filter-meta{margin-left:0}
+  }
+</style>
+</head>
+<body>
+
+<!-- scroll progress -->
+<div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+
+<!-- aurora glow -->
+<div class="aurora" id="aurora"></div>
+
+<!-- header -->
+<header class="hdr" id="hdr">
+  <a class="hdr-logo" href="#top" data-scramble>
+    <svg width="22" height="22" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="2.2" fill="currentColor"/><ellipse cx="10" cy="10" rx="8" ry="3" stroke="currentColor"/><ellipse cx="10" cy="10" rx="8" ry="3" stroke="currentColor" transform="rotate(60 10 10)"/><ellipse cx="10" cy="10" rx="8" ry="3" stroke="currentColor" transform="rotate(120 10 10)"/></svg>
+    AtomCode
+  </a>
+  <nav class="hdr-nav" id="hdrNav">
+    <a href="#plans" data-section="plans">套餐</a>
+    <a href="#models" data-section="models">模型</a>
+    <a href="#integrate" data-section="integrate">接入</a>
+  </nav>
+  <div class="hdr-right">
+    <a class="btn-pill" href="#" data-magnetic>文档</a>
+    <a class="btn-pill primary" href="#plans" data-magnetic>立即体验</a>
+  </div>
+</header>
+
+<!-- hero -->
+<section class="hero" id="top">
+  <div class="hero-wrap">
+    <div class="hero-eyebrow"><span class="dot"></span>限时免费 · 30 天有效 · 国产昇腾算力</div>
+    <h1 class="hero-h1">订阅制 AI 编码<br><span class="accent">不烧 Token，按量稳跑</span></h1>
+    <p class="hero-sub">AtomCode CodingPlan 提供国产昇腾算力支撑的 AI 编码服务，套餐内不限总量调用、5 小时滚动窗口计量，让模型用得起也用得久。</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-n" data-count="500" data-suffix="">0</span><span class="stat-l">总名额</span></div>
+      <div class="stat"><span class="stat-n" data-count="213" data-suffix="">0</span><span class="stat-l">已申请</span></div>
+      <div class="stat"><span class="stat-n" data-count="30" data-suffix=" 天">0</span><span class="stat-l">权益有效期</span></div>
+      <div class="stat"><span class="stat-n" data-count="12" data-suffix="">0</span><span class="stat-l">支持模型</span></div>
+    </div>
+    <a href="#plans" class="hero-banner" data-magnetic>
+      <div class="left">
+        <span class="tag">NEW</span>
+        <span>订阅制编码权益 · 告别按 Token 烧钱 · 国产算力首发</span>
+      </div>
+      <span style="color:var(--accent)">查看套餐 →</span>
+    </a>
+  </div>
+</section>
+
+<!-- quota strip -->
+<div class="quota">
+  <div class="quota-wrap">
+    <div class="quota-l">
+      <div class="item"><span class="pip"></span><span>剩余名额 <span class="num" id="qLeft">287</span> / 500</span></div>
+      <div class="item"><span>倒计时</span><span class="num" id="qTime">12D 04:23:11</span></div>
+      <div class="item"><span>当前窗口用量</span><span class="num">0%</span></div>
+    </div>
+    <div class="quota-progress"><div class="fill" id="qFill" style="width:42.6%"></div></div>
+  </div>
+</div>
+
+<!-- left rail -->
+<nav class="rail" id="rail">
+  <div class="rail-item active" data-target="top"><span class="pip"></span>首页</div>
+  <div class="rail-item" data-target="plans"><span class="pip"></span>套餐</div>
+  <div class="rail-item" data-target="models"><span class="pip"></span>模型</div>
+  <div class="rail-item" data-target="integrate"><span class="pip"></span>接入</div>
+</nav>
+
+<!-- task chips -->
+<section class="chips-section">
+  <div class="lbl" data-scramble>// 你想做什么？ 套餐里高亮支持你任务的档位</div>
+  <div class="chips" id="taskChips">
+    <button class="chip" data-task="text">文本生成</button>
+    <button class="chip" data-task="imgText">图文转文本</button>
+    <button class="chip" data-task="t2i">文本生成图像</button>
+    <button class="chip" data-task="i2i">图像生成图像</button>
+    <button class="chip" data-task="t2v">文本生成视频</button>
+    <button class="chip" data-task="i2v">图像生成视频</button>
+    <button class="chip" data-task="sim">句子相似度</button>
+  </div>
+  <div class="chips-tip" id="chipsTip">点选你的任务，下方套餐会高亮支持该任务的档位</div>
+</section>
+
+<!-- pricing -->
+<section class="pricing" id="plans">
+  <div class="section-head">
+    <h2><span class="mono">// 01 · 套餐</span>三档限时免费</h2>
+    <div class="hint">每 5 小时滚动窗口 · 30 天有效期</div>
+  </div>
+  <div class="tiers" id="tiers">
+    <article class="tier" data-tier="lite" data-tasks="text imgText sim">
+      <div class="tier-tag" data-scramble>LITE</div>
+      <h3 class="tier-name" data-scramble>Lite</h3>
+      <p class="tier-tagline">日常编码体验</p>
+      <div class="price-row">
+        <span class="free">免费</span>
+        <span class="per">/ 限时</span>
+      </div>
+      <div class="tier-meta">
+        <div class="row"><span class="k">名额</span><span class="v"><span class="count" data-count="500">0</span> 个</span></div>
+        <div class="row"><span class="k">有效期</span><span class="v">30 天</span></div>
+        <div class="row"><span class="k">窗口</span><span class="v">5h 滚动</span></div>
+      </div>
+      <div class="tier-models">
+        <span class="mtag">deepseek-v4-flash</span>
+        <span class="mtag">Qwen3-Coder</span>
+        <span class="mtag">Qwen3-235B</span>
+      </div>
+      <div class="tier-tasks">
+        <span class="ttag" data-task="text">文本</span>
+        <span class="ttag" data-task="imgText">图文转文本</span>
+        <span class="ttag" data-task="sim">句相似</span>
+      </div>
+      <a href="#" class="tier-cta outline" data-magnetic>下载 AtomCode 领取 →</a>
+      <div class="tier-cta-sub">复制安装命令 <span class="kbd">⌘C</span></div>
+    </article>
+
+    <article class="tier featured is-hover" data-tier="pro" data-tasks="text imgText t2i i2i sim">
+      <div class="ribbon">RECOMMENDED</div>
+      <div class="tier-tag" data-scramble>PRO</div>
+      <h3 class="tier-name" data-scramble>Pro</h3>
+      <p class="tier-tagline">效率升级首选 · 比 Lite 5× 可用量</p>
+      <div class="price-row">
+        <span class="free">免费</span>
+        <span class="per">/ 限时</span>
+      </div>
+      <div class="tier-meta">
+        <div class="row"><span class="k">名额</span><span class="v"><span class="count" data-count="100">0</span> 个</span></div>
+        <div class="row"><span class="k">有效期</span><span class="v">30 天</span></div>
+        <div class="row"><span class="k">窗口</span><span class="v">5h 滚动 · 5× Lite</span></div>
+      </div>
+      <div class="tier-models">
+        <span class="mtag">deepseek-v4-flash</span>
+        <span class="mtag">Qwen3-Coder</span>
+        <span class="mtag">Qwen3-235B</span>
+        <span class="mtag">GLM-5.1</span>
+      </div>
+      <div class="tier-tasks">
+        <span class="ttag" data-task="text">文本</span>
+        <span class="ttag" data-task="imgText">图文转文本</span>
+        <span class="ttag" data-task="t2i">文生图</span>
+        <span class="ttag" data-task="i2i">图生图</span>
+        <span class="ttag" data-task="sim">句相似</span>
+      </div>
+      <a href="#" class="tier-cta solid" data-magnetic>立即下载领取 →</a>
+      <div class="tier-cta-sub" id="qrTrigger">扫码下载 <svg width="10" height="10" viewBox="0 0 10 10" style="display:inline-block;vertical-align:middle"><rect x="0" y="0" width="4" height="4" fill="currentColor"/><rect x="6" y="0" width="4" height="4" fill="currentColor"/><rect x="0" y="6" width="4" height="4" fill="currentColor"/><rect x="6" y="6" width="2" height="2" fill="currentColor"/></svg></div>
+    </article>
+
+    <article class="tier coming" data-tier="max" data-tasks="text imgText t2i i2i t2v i2v sim">
+      <div class="tier-tag" data-scramble>MAX</div>
+      <h3 class="tier-name" data-scramble>Max</h3>
+      <p class="tier-tagline">更大额度 · 更长有效期 · 全昇腾模型</p>
+      <div class="price-row">
+        <span class="free">敬请期待</span>
+      </div>
+      <div class="tier-meta">
+        <div class="row"><span class="k">名额</span><span class="v">— —</span></div>
+        <div class="row"><span class="k">有效期</span><span class="v">更长</span></div>
+        <div class="row"><span class="k">窗口</span><span class="v">更高上限</span></div>
+      </div>
+      <div class="tier-models">
+        <span class="mtag">DeepSeek-R1</span>
+        <span class="mtag">DeepSeek-V3.2</span>
+        <span class="mtag">Wan2.2</span>
+        <span class="mtag">Qwen-Image</span>
+        <span class="mtag">+ 更多</span>
+      </div>
+      <div class="tier-tasks">
+        <span class="ttag" data-task="text">文本</span>
+        <span class="ttag" data-task="imgText">图文</span>
+        <span class="ttag" data-task="t2i">文生图</span>
+        <span class="ttag" data-task="i2i">图生图</span>
+        <span class="ttag" data-task="t2v">文生视频</span>
+        <span class="ttag" data-task="i2v">图生视频</span>
+      </div>
+      <button class="tier-cta disabled" disabled>COMING SOON</button>
+      <form class="notify-form" id="notifyForm">
+        <input type="email" placeholder="邮箱 · 开放时第一时间通知你" required>
+        <button type="submit">通知我</button>
+      </form>
+    </article>
+  </div>
+</section>
+
+<!-- models -->
+<section class="models" id="models">
+  <div class="models-wrap">
+    <div class="section-head">
+      <h2><span class="mono">// 02 · 模型</span>昇腾大模型 · 即开即用</h2>
+      <div class="hint">支持文本 / 视觉 / 图像 / 视频 / 嵌入</div>
+    </div>
+
+    <div class="filter-bar">
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+        <input id="searchInp" type="text" placeholder="搜索模型名称、参数量、License…">
+      </div>
+      <div class="filter-chips" id="filterChips">
+        <button class="fchip active" data-filter="all">全部</button>
+        <button class="fchip" data-filter="text">文本</button>
+        <button class="fchip" data-filter="vision">视觉</button>
+        <button class="fchip" data-filter="image">图像</button>
+        <button class="fchip" data-filter="video">视频</button>
+        <button class="fchip" data-filter="embed">嵌入</button>
+        <button class="fchip" data-filter="mit">MIT</button>
+        <button class="fchip" data-filter="apache">Apache 2.0</button>
+      </div>
+      <div class="filter-meta">显示 <b id="visibleCount">12</b> / 12 个模型</div>
+    </div>
+
+    <div class="grid" id="modelGrid">
+      <!-- cards populated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- footer -->
+<footer class="ftr" id="integrate">
+  深入了解 AtomCode · <a href="#">官网</a> / <a href="#">开放平台</a> / <a href="#">SDK 文档</a> / <a href="#">联系我们</a>
+  <br>© 2026 AtomCode · AtomGit AI 社区
+</footer>
+
+<!-- code modal -->
+<div class="overlay" id="overlay">
+  <div class="dialog">
+    <div class="dlg-head">
+      <div class="dlg-title">接入示例 <small id="modelLabel">model-name</small></div>
+      <span class="dlg-close" id="closeDlg">×</span>
+    </div>
+    <div class="dlg-tabs" id="dlgTabs">
+      <div class="dlg-tab active" data-lang="curl">cURL</div>
+      <div class="dlg-tab" data-lang="python">Python</div>
+      <div class="dlg-tab" data-lang="node">Node.js</div>
+    </div>
+    <div class="dlg-body">
+      <pre class="codebox" id="codebox"><button class="codecopy" id="codecopy">复制</button><code id="codeBody"></code></pre>
+    </div>
+  </div>
+</div>
+
+<!-- toast -->
+<div class="toast" id="toast">已复制</div>
+
+<script>
+/* ========== data ========== */
+const MODELS=[
+  {id:'deepseek-v3.2-exp',name:'DeepSeek-V3.2-Exp',vendor:'DeepSeek',params:'671B · MoE 37B',license:'MIT',tasks:['text'],hot:true,
+   desc:'实验性模型，基于 V3.1-Terminus 架构，创新引入 DeepSeek Sparse Attention 稀疏注意力机制，保持高质量输出。'},
+  {id:'deepseek-r1',name:'DeepSeek-R1',vendor:'DeepSeek',params:'671B · MoE',license:'MIT',tasks:['text'],hot:true,
+   desc:'新一代推理模型，大规模强化学习训练，逻辑/数学/编码表现卓越，逼近闭源模型水平。'},
+  {id:'deepseek-v3',name:'DeepSeek-V3',vendor:'DeepSeek',params:'671B · 激活 37B',license:'MIT',tasks:['text'],
+   desc:'强大开源 MoE 模型，多头潜在注意力 + DeepSeekMoE 架构，训练高效、成本低、性能领先。'},
+  {id:'qwen3-coder',name:'Qwen3-Coder',vendor:'Qwen',params:'480B · 256K→1M',license:'Apache 2.0',tasks:['text'],hot:true,
+   desc:'当前最强开源代码模型之一，专为智能编程与工具调用设计，单次输出最高 65536 tokens。'},
+  {id:'qwen3-235b',name:'Qwen3-235B-A22B',vendor:'Qwen',params:'235B · 激活 22B',license:'Apache 2.0',tasks:['text'],
+   desc:'强大开源 LLM，指令遵循、逻辑推理、文本理解、数学、科学、编程、工具使用表现优异。'},
+  {id:'qwen3-30b',name:'Qwen3-30B-A3B',vendor:'Qwen',params:'30.5B · 激活 3.3B',license:'Apache 2.0',tasks:['text'],
+   desc:'轻量化 MoE 模型，30 亿激活参数撬动 30 亿级表现，部署灵活，端侧友好。'},
+  {id:'qwen3-32b',name:'Qwen3-32B',vendor:'Qwen',params:'32.8B',license:'Apache 2.0',tasks:['text'],
+   desc:'稠密架构、64 层、Q/KV 头数 64/8，支持 32K → YaRN 131K 长上下文。'},
+  {id:'qwen-image',name:'Qwen-Image',vendor:'Qwen',params:'—',license:'Apache 2.0',tasks:['image'],hot:true,
+   desc:'通义千问图像生成基础模型，复杂文本渲染与精准图像编辑表现突出。九月迭代支持 1-3 张图编辑。'},
+  {id:'qwen-vl',name:'Qwen-VL',vendor:'Qwen',params:'—',license:'Apache 2.0',tasks:['vision'],
+   desc:'新一代视觉语言模型，图像理解、视频处理能力卓越，可操作手机、机器人等设备。'},
+  {id:'wan2.2',name:'Wan2.2 (I2V-A14B)',vendor:'Wan',params:'14B · MoE',license:'Apache 2.0',tasks:['video'],hot:true,
+   desc:'开源视频生成 MoE 模型，文本/图像 → 视频，4090 消费级显卡可跑，720P 最快模型之一。'},
+  {id:'glm-5.1',name:'GLM-5.1',vendor:'GLM',params:'—',license:'Apache 2.0',tasks:['text'],
+   desc:'GLM 系列旗舰版，知识、推理、编码、对齐与代理任务全面进阶。'},
+  {id:'kimi-emb',name:'Kimi Embedding',vendor:'Kimi',params:'多语言 8192 tokens',license:'MIT',tasks:['embed'],
+   desc:'全能多语言嵌入模型：稠密 + 稀疏 + 多元向量检索，覆盖 100+ 语言，从短句到 8192 tokens。'},
+];
+const LIC_COLOR={'MIT':'var(--mit)','Apache 2.0':'var(--apache)','Qwen License':'var(--qwen)'};
+const VENDOR_COLOR={DeepSeek:'#ff8e6c',Qwen:'#b07cff',Wan:'#69d28a',GLM:'#7aa6ff',Kimi:'#e8a050'};
+
+/* ========== render model grid ========== */
+const grid=document.getElementById('modelGrid');
+function render(list){
+  grid.innerHTML='';
+  list.forEach(m=>{
+    const card=document.createElement('article');
+    card.className='mcard';
+    card.dataset.id=m.id;
+    card.dataset.tasks=m.tasks.join(' ');
+    card.dataset.license=m.license.replace(/[. ]/g,'').toLowerCase();
+    card.style.setProperty('--bar',LIC_COLOR[m.license]||'#444');
+    card.innerHTML=`
+      <div class="mhead">
+        <div class="mlogo" style="background:${VENDOR_COLOR[m.vendor]||'#aaa'}">${m.vendor[0]}</div>
+        <div>
+          <h3 class="mname">${m.name}</h3>
+          <div class="mparams">${m.params}</div>
+        </div>
+      </div>
+      <div class="mbadges">
+        <span class="mbadge license" style="--bc:${LIC_COLOR[m.license]||'#aaa'};border-color:${LIC_COLOR[m.license]||'#444'}">${m.license}</span>
+        ${m.tasks.map(t=>`<span class="mbadge task">${({text:'文本',vision:'视觉',image:'图像',video:'视频',embed:'嵌入'})[t]||t}</span>`).join('')}
+        ${m.hot?'<span class="mbadge hot">HOT</span>':''}
+      </div>
+      <p class="mdesc">${m.desc}</p>
+      <div class="mfoot">
+        <a href="#" class="detail">查看详情 →</a>
+        <button class="copyc" data-copy="${m.id}">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          接入示例
+        </button>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+render(MODELS);
+
+/* ========== model filter + search ========== */
+(function(){
+  const chips=document.getElementById('filterChips');
+  const inp=document.getElementById('searchInp');
+  const count=document.getElementById('visibleCount');
+  let activeFilter='all';
+  function apply(){
+    const q=inp.value.trim().toLowerCase();
+    let visible=0;
+    document.querySelectorAll('.mcard').forEach(c=>{
+      const m=MODELS.find(x=>x.id===c.dataset.id);
+      const f=activeFilter;
+      const okF=f==='all'||m.tasks.includes(f)||(f==='mit'&&m.license==='MIT')||(f==='apache'&&m.license==='Apache 2.0');
+      const okQ=!q||m.name.toLowerCase().includes(q)||m.desc.toLowerCase().includes(q)||m.params.toLowerCase().includes(q);
+      const show=okF&&okQ;
+      c.classList.toggle('hidden',!show);
+      if(show) visible++;
+    });
+    count.textContent=visible;
+  }
+  chips.addEventListener('click',e=>{
+    const b=e.target.closest('.fchip');if(!b)return;
+    chips.querySelectorAll('.fchip').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');activeFilter=b.dataset.filter;apply();
+  });
+  inp.addEventListener('input',apply);
+})();
+
+/* ========== task chip → tier highlight ========== */
+(function(){
+  const chips=document.getElementById('taskChips');
+  const tip=document.getElementById('chipsTip');
+  let active=null;
+  chips.addEventListener('click',e=>{
+    const b=e.target.closest('.chip');if(!b)return;
+    if(b.classList.contains('active')){
+      b.classList.remove('active');active=null;
+    } else {
+      chips.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');active=b.dataset.task;
+    }
+    const TASK_NAMES={text:'文本生成',imgText:'图文转文本',t2i:'文本生成图像',i2i:'图像生成图像',t2v:'文本生成视频',i2v:'图像生成视频',sim:'句子相似度'};
+    document.querySelectorAll('.tier').forEach(tier=>{
+      const supports=(tier.dataset.tasks||'').split(' ');
+      tier.querySelectorAll('.ttag').forEach(t=>{
+        t.classList.remove('hit','miss');
+        if(active){
+          if(t.dataset.task===active) t.classList.add('hit');
+        }
+      });
+      tier.classList.toggle('faded',active && !supports.includes(active));
+    });
+    if(active){
+      const supporting=Array.from(document.querySelectorAll('.tier')).filter(t=>(t.dataset.tasks||'').split(' ').includes(active));
+      tip.textContent=`「${TASK_NAMES[active]}」· ${supporting.length} 个套餐支持 → ${supporting.map(t=>t.dataset.tier.toUpperCase()).join(' · ')}`;
+    } else {
+      tip.textContent='点选你的任务，下方套餐会高亮支持该任务的档位';
+    }
+  });
+})();
+
+/* ========== tier hover focus ========== */
+(function(){
+  const tiers=document.getElementById('tiers');
+  const cards=tiers.querySelectorAll('.tier');
+  cards.forEach(c=>{
+    c.addEventListener('mouseenter',()=>{
+      tiers.classList.add('has-hover');
+      cards.forEach(x=>x.classList.remove('is-hover'));
+      c.classList.add('is-hover');
+    });
+    c.addEventListener('mouseleave',()=>{
+      tiers.classList.remove('has-hover');
+    });
+  });
+  // restore default emphasis (pro)
+  tiers.addEventListener('mouseleave',()=>{
+    cards.forEach(x=>x.classList.remove('is-hover'));
+    tiers.querySelector('[data-tier="pro"]').classList.add('is-hover');
+  });
+})();
+
+/* ========== count-up animation ========== */
+(function(){
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting && !en.target._done){
+        en.target._done=true;
+        const tgt=parseInt(en.target.dataset.count,10);
+        const suf=en.target.dataset.suffix||'';
+        const dur=1200;
+        const t0=performance.now();
+        const step=t=>{
+          const k=Math.min(1,(t-t0)/dur);
+          const e=1-Math.pow(1-k,3);
+          en.target.textContent=Math.floor(tgt*e).toLocaleString()+suf;
+          if(k<1) requestAnimationFrame(step);
+          else en.target.textContent=tgt.toLocaleString()+suf;
+        };
+        requestAnimationFrame(step);
+      }
+    });
+  },{threshold:.4});
+  document.querySelectorAll('[data-count]').forEach(el=>io.observe(el));
+})();
+
+/* ========== model card 3D tilt + spotlight ========== */
+(function(){
+  document.body.addEventListener('mousemove',e=>{
+    const card=e.target.closest('.mcard');
+    if(!card) return;
+    const r=card.getBoundingClientRect();
+    const px=(e.clientX-r.left)/r.width;
+    const py=(e.clientY-r.top)/r.height;
+    card.style.setProperty('--mx',(px*100)+'%');
+    card.style.setProperty('--my',(py*100)+'%');
+    card.style.transform=`perspective(900px) rotateX(${(0.5-py)*5}deg) rotateY(${(px-0.5)*5}deg) translateY(-2px)`;
+  });
+  document.body.addEventListener('mouseout',e=>{
+    const card=e.target.closest('.mcard');
+    if(!card) return;
+    if(!card.contains(e.relatedTarget)) card.style.transform='';
+  });
+})();
+
+/* ========== code modal ========== */
+(function(){
+  const ov=document.getElementById('overlay');
+  const close=document.getElementById('closeDlg');
+  const tabs=document.getElementById('dlgTabs');
+  const body=document.getElementById('codeBody');
+  const label=document.getElementById('modelLabel');
+  const copy=document.getElementById('codecopy');
+  const toast=document.getElementById('toast');
+  let current=null;
+
+  function buildSnippet(lang,m){
+    const k=s=>`<span class="kw">${s}</span>`, str=s=>`<span class="str">${s}</span>`, com=s=>`<span class="com">${s}</span>`;
+    if(lang==='curl') return [
+      `${com('# 使用 AtomCode CodingPlan · '+m.name)}`,
+      `curl -X POST ${str('"https://api.atomcode.io/v1/chat/completions"')} \\`,
+      `  -H ${str('"Authorization: Bearer $ATOM_KEY"')} \\`,
+      `  -H ${str('"Content-Type: application/json"')} \\`,
+      `  -d ${str("'{")}`,
+      `${str(`    "model": "${m.id}",`)}`,
+      `${str(`    "messages": [{"role":"user","content":"用 Python 写个快排"}],`)}`,
+      `${str(`    "temperature": 0.7,`)}`,
+      `${str(`    "max_tokens": 4096`)}`,
+      `${str("  }'")}`,
+    ].join('\n');
+    if(lang==='python') return [
+      `${com('# pip install atomcode')}`,
+      `${k('from')} atomcode ${k('import')} AtomCode`,
+      ``,
+      `client = AtomCode(api_key=${str('"$ATOM_KEY"')})`,
+      ``,
+      `resp = client.chat.completions.create(`,
+      `    model=${str(`"${m.id}"`)},`,
+      `    messages=[{${str('"role"')}: ${str('"user"')}, ${str('"content"')}: ${str('"用 Python 写个快排"')}}],`,
+      `    temperature=${str('0.7')},`,
+      `    max_tokens=${str('4096')},`,
+      `)`,
+      `${k('print')}(resp.choices[0].message.content)`,
+    ].join('\n');
+    return [
+      `${com('// npm i @atomcode/sdk')}`,
+      `${k('import')} { AtomCode } ${k('from')} ${str("'@atomcode/sdk'")};`,
+      ``,
+      `${k('const')} client = ${k('new')} AtomCode({ apiKey: ${k('process')}.env.ATOM_KEY });`,
+      ``,
+      `${k('const')} resp = ${k('await')} client.chat.completions.create({`,
+      `  model: ${str(`'${m.id}'`)},`,
+      `  messages: [{ role: ${str("'user'")}, content: ${str("'用 Python 写个快排'")} }],`,
+      `  temperature: ${str('0.7')},`,
+      `  max_tokens: ${str('4096')},`,
+      `});`,
+      `console.log(resp.choices[0].message.content);`,
+    ].join('\n');
+  }
+  function showLang(lang){
+    tabs.querySelectorAll('.dlg-tab').forEach(t=>t.classList.toggle('active',t.dataset.lang===lang));
+    body.innerHTML=buildSnippet(lang,current);
+  }
+  document.body.addEventListener('click',e=>{
+    const b=e.target.closest('[data-copy]');
+    if(!b) return;
+    const m=MODELS.find(x=>x.id===b.dataset.copy);
+    current=m;
+    label.textContent=m.id;
+    showLang('curl');
+    ov.classList.add('show');
+  });
+  tabs.addEventListener('click',e=>{
+    const t=e.target.closest('.dlg-tab');if(!t)return;
+    showLang(t.dataset.lang);
+  });
+  close.addEventListener('click',()=>ov.classList.remove('show'));
+  ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('show')});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')ov.classList.remove('show')});
+  copy.addEventListener('click',()=>{
+    const code=body.textContent;
+    if(navigator.clipboard) navigator.clipboard.writeText(code).catch(()=>{});
+    copy.classList.add('copied');copy.textContent='✓ 已复制';
+    toast.textContent='✓ 接入代码已复制';toast.classList.add('show');
+    setTimeout(()=>{toast.classList.remove('show')},1600);
+    setTimeout(()=>{copy.classList.remove('copied');copy.textContent='复制'},1600);
+  });
+})();
+
+/* ========== notify form + qr ========== */
+(function(){
+  const toast=document.getElementById('toast');
+  document.getElementById('notifyForm').addEventListener('submit',e=>{
+    e.preventDefault();
+    toast.textContent='✓ 已订阅 · 开放时第一时间通知你';
+    toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2000);
+    e.target.reset();
+  });
+  document.getElementById('qrTrigger').addEventListener('click',()=>{
+    toast.textContent='扫码下载 · QR 弹窗占位（接二维码即可）';
+    toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2000);
+  });
+})();
+
+/* ========== aurora + ripple ========== */
+(function(){
+  const aurora=document.getElementById('aurora');
+  let tx=-300,ty=-300,x=tx,y=ty;
+  addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
+  (function tick(){
+    x+=(tx-x)*0.18;y+=(ty-y)*0.18;
+    aurora.style.setProperty('--mx',x+'px');
+    aurora.style.setProperty('--my',y+'px');
+    requestAnimationFrame(tick);
+  })();
+  addEventListener('click',e=>{
+    if(e.target.closest('input,textarea,select')) return;
+    const r=document.createElement('div');r.className='ripple';
+    r.style.left=e.clientX+'px';r.style.top=e.clientY+'px';
+    document.body.appendChild(r);setTimeout(()=>r.remove(),700);
+  });
+})();
+
+/* ========== scroll progress + header scrolled state ========== */
+(function(){
+  const bar=document.getElementById('progressBar');
+  const hdr=document.getElementById('hdr');
+  function tick(){
+    const max=Math.max(1,document.documentElement.scrollHeight-innerHeight);
+    bar.style.width=(scrollY/max*100).toFixed(2)+'%';
+    hdr.classList.toggle('scrolled',scrollY>40);
+  }
+  tick();addEventListener('scroll',tick,{passive:true});
+})();
+
+/* ========== left rail + nav anchor highlight ========== */
+(function(){
+  const sections=[['top','top'],['plans','plans'],['models','models'],['integrate','integrate']];
+  function active(){
+    let cur='top';
+    for(const [id] of sections){
+      const el=document.getElementById(id);if(!el)continue;
+      const r=el.getBoundingClientRect();
+      if(r.top<=innerHeight*0.4) cur=id;
+    }
+    document.querySelectorAll('.rail-item').forEach(i=>i.classList.toggle('active',i.dataset.target===cur));
+    document.querySelectorAll('.hdr-nav a').forEach(a=>a.classList.toggle('active',a.dataset.section===cur));
+  }
+  active();addEventListener('scroll',active,{passive:true});
+  document.querySelectorAll('.rail-item').forEach(i=>{
+    i.addEventListener('click',()=>{
+      const el=document.getElementById(i.dataset.target);
+      if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  });
+})();
+
+/* ========== magnetic ========== */
+(function(){
+  const els=Array.from(document.querySelectorAll('[data-magnetic]')).map(el=>({el,tx:0,ty:0,x:0,y:0}));
+  let mx=-9999,my=-9999;
+  addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+  function loop(){
+    for(const it of els){
+      const r=it.el.getBoundingClientRect();
+      if(r.bottom<0||r.top>innerHeight){it.tx=it.ty=0}
+      else{
+        const cx=r.left+r.width/2,cy=r.top+r.height/2;
+        const dx=mx-cx,dy=my-cy,d=Math.hypot(dx,dy);
+        const R=Math.max(r.width,r.height)*1.3+30;
+        if(d<R){const k=(1-d/R)*.3;it.tx=dx*k;it.ty=dy*k}else{it.tx=0;it.ty=0}
+      }
+      it.x+=(it.tx-it.x)*.22;it.y+=(it.ty-it.y)*.22;
+      it.el.style.transform=(Math.abs(it.x)<.1&&Math.abs(it.y)<.1)?'':`translate(${it.x.toFixed(1)}px,${it.y.toFixed(1)}px)`;
+    }
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+/* ========== scramble ========== */
+(function(){
+  const A='!<>-_\\/[]{}—=+*^?#@$%&|~01',C='零壹贰叁肆伍陆柒捌玖原码原子计算激励';
+  function scramble(el){
+    if(el._busy)return;
+    const orig=el.dataset._t||el.textContent;el.dataset._t=orig;
+    const chars=Array.from(orig);const total=Math.max(18,chars.length*2+10);let f=0;el._busy=true;
+    (function step(){
+      let out='';for(let i=0;i<chars.length;i++){
+        const ch=chars[i];const s=(i/chars.length)*total*.55,e=s+total*.35;
+        if(f>=e||/[\s,.·—:;\/\(\)\[\]\/]/.test(ch)){out+=ch;continue}
+        if(f<s){out+=ch;continue}
+        const p=/[A-Za-z0-9]/.test(ch)?A:/[一-龥]/.test(ch)?C:A;
+        out+=p[(Math.random()*p.length)|0];
+      }
+      el.textContent=out;f++;
+      if(f<total) requestAnimationFrame(step);else{el.textContent=orig;el._busy=false}
+    })();
+  }
+  document.querySelectorAll('[data-scramble]').forEach(el=>{
+    el.dataset._t=el.textContent;
+    el.addEventListener('mouseenter',()=>scramble(el));
+  });
+})();
+
+/* ========== quota ticker ========== */
+(function(){
+  const left=document.getElementById('qLeft'),time=document.getElementById('qTime'),fill=document.getElementById('qFill');
+  let cur=287;const total=500;
+  const end=new Date(Date.now()+12*86400000+4*3600000+23*60000+11*1000);
+  function pad(n){return String(n).padStart(2,'0')}
+  function tick(){
+    const d=end-Date.now();
+    const D=Math.floor(d/86400000),H=Math.floor(d/3600000)%24,M=Math.floor(d/60000)%60,S=Math.floor(d/1000)%60;
+    time.textContent=`${D}D ${pad(H)}:${pad(M)}:${pad(S)}`;
+  }
+  tick();setInterval(tick,1000);
+  // slow quota drop (visual)
+  setInterval(()=>{
+    if(cur>0 && Math.random()<.2){cur--;left.textContent=cur;fill.style.width=((total-cur)/total*100).toFixed(1)+'%';}
+  },5000);
+})();
+</script>
+</body>
+</html>
